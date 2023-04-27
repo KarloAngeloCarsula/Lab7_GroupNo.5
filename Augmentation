@@ -1,0 +1,67 @@
+import cv2
+import os
+
+# Define input and output directories
+input_dir = "input_folder"
+output_dir_blur = "output_folder_blur"
+output_dir_laplacian = "output_folder_laplacian"
+output_dir_resize = "output_folder_resize"
+
+# Create output directories if they do not exist
+os.makedirs(output_dir_blur, exist_ok=True)
+os.makedirs(output_dir_laplacian, exist_ok=True)
+os.makedirs(output_dir_resize, exist_ok=True)
+
+# Rename images in input directory
+for count, filename in enumerate(os.listdir(input_dir)):
+    if filename.endswith('.jpg') or filename.endswith('.png'):
+        new_name = f"image_{count:03d}.jpg"
+        os.rename(os.path.join(input_dir, filename), os.path.join(input_dir, new_name))
+
+# Function to apply Gaussian Blur and save in output directory
+def apply_gaussian_blur(input_img_path, output_dir):
+    img = cv2.imread(input_img_path)
+    blur_img = cv2.GaussianBlur(img, (5, 5), 0)
+    output_img_path = os.path.join(output_dir, os.path.basename(input_img_path))
+    cv2.imwrite(output_img_path, blur_img)
+
+# Function to apply Laplacian and save in output directory
+def apply_laplacian(input_img_path, output_dir):
+    img = cv2.imread(input_img_path)
+    laplacian_img = cv2.Laplacian(img, cv2.CV_8U)
+    output_img_path = os.path.join(output_dir, os.path.basename(input_img_path))
+    cv2.imwrite(output_img_path, laplacian_img)
+
+# Function to resize image and save in output directory
+def resize_image(input_img_path, output_dir, width, height):
+    img = cv2.imread(input_img_path)
+    resized_img = cv2.resize(img, (width, height))
+    output_img_path = os.path.join(output_dir, os.path.basename(input_img_path))
+    cv2.imwrite(output_img_path, resized_img)
+
+
+# Rename images in input directory
+for count, filename in enumerate(os.listdir(input_dir)):
+    if filename.endswith('.jpg') or filename.endswith('.png'):
+        new_name = f"image_{count:03d}.jpg"
+        os.rename(os.path.join(input_dir, filename), os.path.join(input_dir, new_name))
+
+# Apply Gaussian Blur to images in input directory and save in output directory
+for filename in os.listdir(input_dir):
+    if filename.endswith('.jpg') or filename.endswith('.png'):
+        input_img_path = os.path.join(input_dir, filename)
+        apply_gaussian_blur(input_img_path, output_dir_blur)
+
+# Apply Laplacian to images in input directory and save in output directory
+for filename in os.listdir(input_dir):
+    if filename.endswith('.jpg') or filename.endswith('.png'):
+        input_img_path = os.path.join(input_dir, filename)
+        apply_laplacian(input_img_path, output_dir_laplacian)
+
+# Resize images in input directory and save in output directory
+for filename in os.listdir(input_dir):
+    if filename.endswith('.jpg') or filename.endswith('.png'):
+        input_img_path = os.path.join(input_dir, filename)
+        resize_image(input_img_path, output_dir_resize, 400, 600)
+
+print("Basic augmentation applied!")
